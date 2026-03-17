@@ -12,7 +12,7 @@ export class MainPlayer extends HTMLElement {
 
     render() {
         this.shadowRoot.innerHTML = `
-        <link rel="stylesheet" href="./css/MainPlayer.css">
+        <link rel="stylesheet" href="./css/components/MainPlayer.css">
         
         <div class="player-container">
 

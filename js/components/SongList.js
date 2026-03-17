@@ -11,7 +11,7 @@ export class SongList extends HTMLElement {
 
     render() {
         this.shadowRoot.innerHTML = `
-        <link rel="stylesheet" href="./css/SongList.css">
+        <link rel="stylesheet" href="./css/components/SongList.css">
         <div class="header">
             <h2>My Songs</h2>
             <button class="add-song" id="add-song">Add Song</button>

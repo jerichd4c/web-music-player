@@ -11,7 +11,7 @@ export class PlaylistManager extends HTMLElement {
 
     render() {
         this.shadowRoot.innerHTML = `
-            <link rel="stylesheet" href="./css/PlaylistManager.css">
+            <link rel="stylesheet" href="./css/components/PlaylistManager.css">
 
             <div class="playlist-manager">
                 <div class="header">
