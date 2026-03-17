@@ -1,7 +1,7 @@
 export class MusicDB {
     constructor() {
         this.dbName = 'MusicDB';
-        this.dbVersion = 1;
+        this.dbVersion = 2;
         this.db = null;
     }
 
@@ -69,4 +69,26 @@ export class MusicDB {
             request.onerror = (event) => reject("Error fetching songs: " + event.target.error);
         });
     }
+
+    async addPlaylist(playlistData) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['playlists'], 'readwrite');
+            const store = transaction.objectStore('playlists');
+            const request = store.add(playlistData);
+
+            request.onsuccess = () => resolve(request.result); // Returns ID
+            request.onerror = (event) => reject("Error adding playlist: " + event.target.error);
+        });
+    }
+
+    async getAllPlaylists() {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['playlists'], 'readonly');
+            const store = transaction.objectStore('playlists');
+            const request = store.getAll();
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = (event) => reject("Error fetching playlists: " + event.target.error);
+        });
+    }  
 }
