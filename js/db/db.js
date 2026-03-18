@@ -140,4 +140,15 @@ export class MusicDB {
             request.onerror = (event) => reject("Error deleting playlist: " + event.target.error);
         });
     }
+
+    async deleteSong(id) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['songs'], 'readwrite');
+            const store = transaction.objectStore('songs');
+            const request = store.delete(id);
+
+            request.onsuccess = () => resolve();
+            request.onerror = (event) => reject("Error deleting song: " + event.target.error);
+        });
+    }
 }

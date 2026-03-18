@@ -18,7 +18,7 @@ export class PlaylistManager extends HTMLElement {
                     <h3>Playlist Manager</h3>
                     <div class="actions">
                         <button id="add-btn" title="New Playlist">➕</button>
-                        <button id="delete-mode-btn" title="Borrar">🗑️</button>
+                        <button id="delete-mode-btn" title="Delete Playlist">🗑️</button>
                     </div>
                 </div>
 

@@ -121,6 +121,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             await loadPlaylistsFromDB();
         });
 
+        // 10. Handle song deletion
+        document.addEventListener('request-remove-song', async (event) => {
+            const songIdToRemove = event.detail.songId;
+
+            // If there's an active playlist, remove the song ID
+            if (activePlaylist) {
+                // 1. Filter array of songs in the playlist to remove the song ID
+                activePlaylist.songIds = activePlaylist.songIds.filter(id => id !== songIdToRemove);
+
+                // 2. Update the playlist in the database
+                await db.updatePlaylist(activePlaylist);
+
+            }
+
+            // 3. Delete the file from the songs store
+            await db.deleteSong(songIdToRemove);
+
+            if (activePlaylist) {
+                // 4. Refresh the song list with songs from the active playlist
+                const songsInPlaylist = await db.getSongsByIds(activePlaylist.songIds);
+                songListEl.updateList(songsInPlaylist);
+
+                currentQueue = songsInPlaylist; // Update the current queue to reflect the removed song
+            } else {
+
+                await loadSongsFromDB(); // If no active playlist, just reload all songs
+            }
+        });
+
     } catch (error) {
         console.error('Failed to initialize database:', error);
     }

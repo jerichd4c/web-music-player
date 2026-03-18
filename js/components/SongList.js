@@ -64,26 +64,59 @@ export class SongList extends HTMLElement {
 
             const item = document.createElement('div');
             item.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
                 padding: 10px;
                 border-bottom: 1px solid #ccc;
                 cursor: pointer;
                 transition: background-color 0.2s;
             `;
-            item.textContent = song.title;
+
+            // Play icon
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = song.title;
+            nameSpan.style.flexGrow = '1';
+            nameSpan.style.cursor = 'pointer';
+
+            // Delete icon
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '❌';
+            deleteBtn.style.cssText = `
+                background: none; 
+                border: none; 
+                cursor: pointer; 
+                font-size: 0.9rem;
+                padding: 5px;
+            `;
+
+            item.appendChild(nameSpan);
+            item.appendChild(deleteBtn);
 
             // Hover effect
             item.onmouseover = () => item.style.background = '#333';
             item.onmouseout = () => item.style.background = 'transparent';
 
             // When a song is clicked, request the main player to play it
-            item.addEventListener('click', () => {
-                const playEvent = new CustomEvent('request-play', {
+            nameSpan.addEventListener('click', () => {
+                this.dispatchEvent(new CustomEvent('request-play', {
                     detail: { song: song },
                     bubbles: true,
                     // Bypass shadow DOM to allow main player to listen to this event
                     composed: true
-                });
-                this.dispatchEvent(playEvent);
+                }));
+            });
+
+            // When delete button is clicked, request the main app to remove the song from the database
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita que se dispare el evento de reproducir al hacer clic en borrar
+                if (confirm(`Are you sure you want to remove "${song.title}" from this list?`)) {
+                    this.dispatchEvent(new CustomEvent('request-remove-song', {
+                        detail: { songId: song.id },
+                        bubbles: true,
+                        composed: true
+                    }));
+                }
             });
 
             container.appendChild(item);
