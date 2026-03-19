@@ -16,10 +16,13 @@ export class MainPlayer extends HTMLElement {
         
         <div class="player-container">
 
-            <img id="cover" src="./resources/default-cover.png" alt="Song Cover" width="150" height="150">
-            <h2 id="title">Select a Song</h2>
-            <h3 id="artist">Artist</h3>
-            <h4 id="genre">Genre</h4>
+            <img id="cover-art" src="./resources/default-cover.jpg" alt="Song Cover" width="150" height="150">
+            
+            <div class="info-container">
+                <h2 id="track-title" class="title">Selecciona un tema</h2>
+                <h3 id="track-artist" class="artist">Artista</h3>
+                <h4 id="track-genre" class="genre">Género</h4>
+            </div><h2 id="title">Select a Song</h2>
 
             <div class="progress-container">
                 <span id="current-time">0:00</span>
@@ -28,9 +31,9 @@ export class MainPlayer extends HTMLElement {
             </div>
 
             <div class="controls">
-                <button id="prev-btn">Prev</button>
-                <button id="play-pause">Play/Pause</button>
-                <button id="next-btn">Next</button>
+                <button id="prev-btn">⏮️</button>
+                <button id="play-pause">Play</button>
+                <button id="next-btn">⏭️</button>
             </div>
 
             <div class="volume-container">
@@ -52,33 +55,58 @@ export class MainPlayer extends HTMLElement {
         this.volumeBar = this.shadowRoot.getElementById('volume-bar');
         this.muteBtn = this.shadowRoot.getElementById('mute-btn');
 
+        // Metadata Elements
+        this.coverArtEl = this.shadowRoot.getElementById('cover-art');
+        this.titleEl = this.shadowRoot.getElementById('track-title');
+        this.artistEl = this.shadowRoot.getElementById('track-artist');
+        this.genreEl = this.shadowRoot.getElementById('track-genre');
+
         this.prevBtn.addEventListener('click', () => this.dispatchEvent(new CustomEvent('request-prev', { bubbles: true, composed: true })));
-
         this.nextBtn.addEventListener('click', () => this.dispatchEvent(new CustomEvent('request-next', { bubbles: true, composed: true })));
-
         this.currentAudio.addEventListener('ended', () => this.dispatchEvent(new CustomEvent('request-next', { bubbles: true, composed: true })));
-
         document.addEventListener('play-song', (event) => this.loadAndPlay(event.detail.song));
-
         this.currentAudio.addEventListener('loadedmetadata', () => this.setDuration());
-
         this.currentAudio.addEventListener('timeupdate', () => this.updateProgress());
-
         this.progressBar.addEventListener('input', (event) => this.seekAudio(event.target.value));
-
         this.volumeBar.addEventListener('input', (event) => this.setVolume(event.target.value));
-
         this.muteBtn.addEventListener('click', () => this.toggleMute());
 
     }
 
     loadAndPlay(songData) {
+        if (!songData || !songData.file) return;
+
         // Converts the song data to URL
         const audioURL = URL.createObjectURL(songData.file);
         this.currentAudio.src = audioURL;
         this.currentAudio.play();
+        this.playPauseButton.textContent = 'Pause';
 
-        this.shadowRoot.getElementById('title').textContent = songData.title;
+        this.titleEl.textContent = songData.title || "Unknown Title";
+        this.artistEl.textContent = songData.artist || "Unknown Artist";
+        this.genreEl.textContent = songData.genre || "Unknown Genre";
+
+        if (songData.cover) {
+            const imageUrl = this.formatCoverImage(songData.cover);
+            this.coverArtEl.src = imageUrl;
+        } else {
+            this.coverArtEl.src = './resources/default-cover.png';
+        }
+    }
+
+    // Aux function to convert byte array to URL for cover images
+    formatCoverImage(pictureData) {
+        // Gry binary data
+        const { data, format } = pictureData;
+        let base64String = "";
+        
+        // Convert byte array to binary string
+        for (let i = 0; i < data.length; i++) {
+            base64String += String.fromCharCode(data[i]);
+        }
+        
+        // Return a data URL that can be used as the src for an image element
+        return `data:${format};base64,${window.btoa(base64String)}`;
     }
 
     togglePlay() {

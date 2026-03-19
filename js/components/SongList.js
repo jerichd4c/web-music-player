@@ -37,7 +37,7 @@ export class SongList extends HTMLElement {
             <div id="list-container"></div>
 
             <dialog id="edit-metadata-modal" style="border-radius: 8px; border: 1px solid #ccc; padding: 20px; width: 80%;">
-                    <h3 style="margin-top: 0;">Editar Metadata</h3>
+                    <h3 style="margin-top: 0;">Edit Metadata</h3>
                     <div style="display: flex; flex-direction: column; gap: 10px;">
                         <input type="text" id="edit-title" placeholder="Título de la canción">
                         <input type="text" id="edit-artist" placeholder="Artista">
