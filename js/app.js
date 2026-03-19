@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadSongsFromDB();
         await loadPlaylistsFromDB();
 
+        // IMPORTANT: No songs will be loaded initially until a playlist is selected
+        songListEl.updateList([]);
+
         // 2. Listen when a song is added
         document.addEventListener('request-add-song', async (event) => {
             if (!activePlaylist) {
@@ -46,12 +49,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             const files = event.detail.files;
-            const allExistingSongs = await db.getAllSongs();
+            const songsInCurrentPlaylist = await db.getSongsByIds(activePlaylist.songIds || []);
 
             // Save every uploaded file to the database
             for (const file of files) {
 
-               const isDuplicate = allExistingSongs.find(s => 
+               const isDuplicate = songsInCurrentPlaylist.find(s => 
                     s.file.name === file.name && s.file.size === file.size
                 );
 
