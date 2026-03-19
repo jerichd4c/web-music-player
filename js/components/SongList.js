@@ -21,6 +21,7 @@ export class SongList extends HTMLElement {
                 <div class="actions">
 
                     <button id="add-btn" title="Add local file">➕</button>
+                    <button id="delete-mode-btn" title="Borrar canciones">🗑️</button>
                 </div>
             </div>
 
@@ -40,8 +41,22 @@ export class SongList extends HTMLElement {
         const addBtn = this.shadowRoot.getElementById('add-btn');
         const fileInput = this.shadowRoot.getElementById('file-input');
         const searchInput = this.shadowRoot.getElementById('search-input');
-    
 
+        this.deleteModeBtn = this.shadowRoot.getElementById('delete-mode-btn');
+        this.isDeleteMode = false;
+
+        this.deleteModeBtn.addEventListener('click', () => {
+            this.isDeleteMode = !this.isDeleteMode;
+            this.deleteModeBtn.style.color = this.isDeleteMode ? 'red' : 'black';
+            
+            // Render songs again to update the delete buttons visibility
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredSongs = this.currentSongs.filter(song => 
+                song.title.toLowerCase().includes(searchTerm)
+            );
+            this.renderSongs(filteredSongs);
+        });
+    
         addBtn.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', (event) => this.handleFiles(event));
@@ -111,30 +126,23 @@ export class SongList extends HTMLElement {
 
             // Delete icon
             const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = '❌';
-            deleteBtn.style.cssText = `
-                background: none; 
-                border: none; 
-                cursor: pointer; 
-                font-size: 0.9rem;
-                padding: 5px;
-            `;
+            deleteBtn.textContent = '🗑️';
+            deleteBtn.className = 'delete-item-btn';
+            deleteBtn.style.display = this.isDeleteMode ? 'block' : 'none';
 
             item.appendChild(nameSpan);
             item.appendChild(deleteBtn);
 
-            // Hover effect
-            item.onmouseover = () => item.style.background = '#333';
-            item.onmouseout = () => item.style.background = 'transparent';
-
             // When a song is clicked, request the main player to play it
             nameSpan.addEventListener('click', () => {
-                this.dispatchEvent(new CustomEvent('request-play', {
+                if (!this.isDeleteMode) {
+                    this.dispatchEvent(new CustomEvent('request-play', {
                     detail: { song: song },
                     bubbles: true,
                     // Bypass shadow DOM to allow main player to listen to this event
                     composed: true
-                }));
+                    }));
+                } 
             });
 
             // When delete button is clicked, request the main app to remove the song from the database
