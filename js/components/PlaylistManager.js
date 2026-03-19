@@ -99,14 +99,13 @@ export class PlaylistManager extends HTMLElement {
         listContainer.innerHTML = ''; // Clear current list
         
         if (playlists.length === 0) {
-            listContainer.innerHTML = '<p class="empty-msg">No playlists found.</p>';
-            return;
+            listContainer.innerHTML = '<p class="empty-msg" style="color: #888;">No playlists found.</p>';
+            return; 
         }
 
         playlists.forEach(playlist => {
             const item = document.createElement('div');
             item.className = 'playlist-item';
-            item.textContent = playlist.name;
 
             // Name container
             const nameSpam = document.createElement('span');

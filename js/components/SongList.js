@@ -29,7 +29,7 @@ export class SongList extends HTMLElement {
                 <input type="text" id="search-input" placeholder="Search song... 🔎">
             </div>
 
-            <input type="file" id="file-input" accept="audio/*" multiple style="display: none;">
+            <input type="file" id="file-input" accept="audio/mp3, audio/m4a, audio/flac, audio/wav, audio/ogg" multiple hidden>
 
             <div id="list-container"></div>
                 </div>

@@ -15,10 +15,10 @@ body {
 
 .app-layout {
     display: grid;
-    /* 3 columns: 250px (PlaylistManager), The rest (MainPlayer), 300px (SongList) */
-    grid-template-columns: 250px 1fr 300px;
+    grid-template-columns: 250px minmax(400px, 1fr) 300px;
     background: white;
     width: 95vw;
+    min-width: 950px; 
     height: 90vh;
     border: 3px solid #222;
     border-radius: 15px;
