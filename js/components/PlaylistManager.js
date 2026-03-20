@@ -62,6 +62,13 @@ export class PlaylistManager extends HTMLElement {
 
         this.isDeleteMode = false;
 
+        // Handle search filtering
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredPlaylists = this.currentPlaylists.filter(p => p.name.toLowerCase().includes(searchTerm));
+            this.renderPlaylists(filteredPlaylists);
+        });
+
         // Show new playlist dialog 
         this.addBtn.addEventListener('click', () => {
             this.dialog.classList.remove('hidden');
@@ -124,15 +131,20 @@ export class PlaylistManager extends HTMLElement {
 
     updateList(playlists) {
         this.currentPlaylists = playlists;
+        this.shadowRoot.getElementById('search-input').value = '';
+        this.renderPlaylists(playlists);
+    }
+
+    renderPlaylists(playlistsToRender) {
         const listContainer = this.shadowRoot.getElementById('playlist-list');
         listContainer.innerHTML = ''; // Clear current list
         
-        if (playlists.length === 0) {
+        if (playlistsToRender.length === 0) {
             listContainer.innerHTML = '<p class="empty-msg" style="color: #888;">No playlists found.</p>';
             return; 
         }
 
-        playlists.forEach(playlist => {
+        playlistsToRender.forEach(playlist => {
             const item = document.createElement('div');
             item.className = 'playlist-item';
             if (this.activePlaylistId === playlist.id) {
