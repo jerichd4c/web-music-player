@@ -72,18 +72,24 @@ export class SongList extends HTMLElement {
             
             // Render songs again to update the delete buttons visibility
             const searchTerm = searchInput.value.toLowerCase();
-            const filteredSongs = this.currentSongs.filter(song => 
-                song.title.toLowerCase().includes(searchTerm)
-            );
+            const filteredSongs = this.currentSongs.filter(song => {
+                const titleMatch = song.title && song.title.toLowerCase().includes(searchTerm);
+                const artistMatch = song.artist && song.artist.toLowerCase().includes(searchTerm);
+                const genreMatch = song.genre && song.genre.toLowerCase().includes(searchTerm);
+                return titleMatch || artistMatch || genreMatch;
+            });
             this.renderSongs(filteredSongs);
         });
 
         // Cascade deletion
         deleteAllBtn.addEventListener('click', () => {
             const searchTerm = searchInput.value.toLowerCase();
-            const filteredSongs = this.currentSongs.filter(song =>
-                song.title.toLowerCase().includes(searchTerm)
-            );
+            const filteredSongs = this.currentSongs.filter(song => {
+                const titleMatch = song.title && song.title.toLowerCase().includes(searchTerm);
+                const artistMatch = song.artist && song.artist.toLowerCase().includes(searchTerm);
+                const genreMatch = song.genre && song.genre.toLowerCase().includes(searchTerm);
+                return titleMatch || artistMatch || genreMatch;
+            });
 
             if (filteredSongs.length === 0) return;
 
@@ -104,8 +110,12 @@ export class SongList extends HTMLElement {
 
         searchInput.addEventListener('input', () => {
             const searchTerm = searchInput.value.toLowerCase();
-            // Filter songs array
-            const filteredSongs = this.currentSongs.filter(song => song.title.toLowerCase().includes(searchTerm));
+            const filteredSongs = this.currentSongs.filter(song => {
+                const titleMatch = song.title && song.title.toLowerCase().includes(searchTerm);
+                const artistMatch = song.artist && song.artist.toLowerCase().includes(searchTerm);
+                const genreMatch = song.genre && song.genre.toLowerCase().includes(searchTerm);
+                return titleMatch || artistMatch || genreMatch;
+            });
             this.renderSongs(filteredSongs);
         });
     }
